@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PersonaService implements IPersonaService {
@@ -26,7 +25,7 @@ public class PersonaService implements IPersonaService {
 
 
     @Override
-    public Persona readPersona(Long id) {
+    public Persona getPersona(Long id) {
         return personaRepository.findById(id).orElse(null);
     }
 

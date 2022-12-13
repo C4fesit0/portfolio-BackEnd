@@ -1,12 +1,13 @@
 package com.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.util.Lazy;
 
 import java.sql.Date;
+
 
 @Entity
 @Getter @Setter
@@ -26,6 +27,14 @@ public class Educacion {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     Persona persona;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    NivelEstudio nivel;
+
+
+    public Educacion() {
+
+    }
+
     public Educacion(Long id, String titulo, Date fecha_inicio, Date fecha_final, boolean actualidad, String institucion, String imagen) {
         this.id = id;
         this.titulo = titulo;
@@ -36,7 +45,5 @@ public class Educacion {
         this.imagen = imagen;
     }
 
-    public Educacion() {
-
-    }
+    
 }
