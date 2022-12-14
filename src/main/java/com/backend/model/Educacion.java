@@ -1,6 +1,5 @@
 package com.backend.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -28,6 +27,7 @@ public class Educacion {
     Persona persona;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_nivel_estudio")
     NivelEstudio nivel;
 
 
@@ -35,8 +35,7 @@ public class Educacion {
 
     }
 
-    public Educacion(Long id, String titulo, Date fecha_inicio, Date fecha_final, boolean actualidad, String institucion, String imagen) {
-        this.id = id;
+    public Educacion(String titulo, Date fecha_inicio, Date fecha_final, boolean actualidad, String institucion, String imagen) {
         this.titulo = titulo;
         this.fecha_inicio = fecha_inicio;
         this.fecha_final = fecha_final;

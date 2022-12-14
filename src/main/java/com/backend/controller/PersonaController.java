@@ -19,7 +19,7 @@ public class PersonaController {
     @GetMapping("/")
     @ResponseBody
     public ResponseEntity<Persona> getPersonaData(){
-        return new ResponseEntity<>(personaService.readPersona(1L) , HttpStatus.OK);
+        return new ResponseEntity<>(personaService.getPersona(1L) , HttpStatus.OK);
     }
 
     @PostMapping("/crear")

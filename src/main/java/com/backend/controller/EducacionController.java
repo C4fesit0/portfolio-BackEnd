@@ -2,9 +2,12 @@ package com.backend.controller;
 
 import com.backend.dto.EducacionDto;
 import com.backend.model.Educacion;
+import com.backend.model.NivelEstudio;
 import com.backend.model.Persona;
 import com.backend.service.IEducacionService;
+import com.backend.service.INivelEstudioService;
 import com.backend.service.IPersonaService;
+import com.backend.service.NivelEstudioService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,9 @@ public class EducacionController {
     @Autowired
     IPersonaService personaService;
 
+    @Autowired
+    INivelEstudioService nivelEstudioService;
+
     @GetMapping("/")
     public List<Educacion> listarEducacion(){
         return educacionService.listEducacion();
@@ -38,6 +44,7 @@ public class EducacionController {
         System.out.println(data.getInstitucion());
         System.out.println(data.getFecha_final());
         System.out.println(data.getFecha_inicio());
+        System.out.println(data.getId_nivel_estudio());
 
         
 
@@ -47,11 +54,12 @@ public class EducacionController {
         String fecha2 = data.getFecha_inicio();
         Date fechaInicio= Date.valueOf(fecha2);
         
-        Educacion educacion = new Educacion(0L,data.getTitulo(),fechaFinal,fechaInicio,
+        Educacion educacion = new Educacion(data.getTitulo(),fechaFinal,fechaInicio,
                                 data.getActualidad(),data.getInstitucion(),data.getImagen());
 
         educacion.setPersona(persona);
-        
+        NivelEstudio nivel = nivelEstudioService.getNivelEstudio(data.getId_nivel_estudio());
+        educacion.setNivel(nivel);
         
         List<Educacion> educacionLista = persona.getEducacion();
         educacionLista.add(educacion);
