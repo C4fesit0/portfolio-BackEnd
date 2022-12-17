@@ -7,7 +7,6 @@ import com.backend.model.Persona;
 import com.backend.service.IEducacionService;
 import com.backend.service.INivelEstudioService;
 import com.backend.service.IPersonaService;
-import com.backend.service.NivelEstudioService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
