@@ -1,7 +1,10 @@
 package com.backend.dto;
 
+import com.backend.model.Tecnologia;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter @Setter
 public class ProyectoDto {
@@ -12,5 +15,6 @@ public class ProyectoDto {
     private String repositorio;
     private String demo;
     private String image;
+    private List<Long> tecnologias;
 
 }

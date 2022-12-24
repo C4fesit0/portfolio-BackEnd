@@ -17,15 +17,14 @@ public class PersonaController {
     private IPersonaService personaService;
 
     @GetMapping("/")
-    @ResponseBody
     public ResponseEntity<Persona> getPersonaData(){
         return new ResponseEntity<>(personaService.getPersona(1L) , HttpStatus.OK);
     }
 
     @PostMapping("/crear")
-    public void postPersona(@RequestBody Persona persona){
-        System.out.println(persona.getTelefono());
-        personaService.createPersona(persona);
+    public void crearPersona(@RequestBody Persona persona){
+        System.out.println(persona.getEmail());
+        //personaService.createPersona(persona);
     }
 
     @PutMapping("/actualizar")
@@ -33,8 +32,8 @@ public class PersonaController {
         personaService.updatePersona(persona);
     }
 
-    @DeleteMapping("/{id}/eliminar")
-    public void deletePersona(@RequestParam Long id){
+    @DeleteMapping("/eliminar/{id}")
+    public void deletePersona(@PathVariable Long id){
         personaService.deletePersona(id);
     }
 }

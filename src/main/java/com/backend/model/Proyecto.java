@@ -1,8 +1,11 @@
 package com.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Getter @Setter
@@ -19,8 +22,17 @@ public class Proyecto {
     private String image;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "autor")
     Persona autor;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "tecnologia_proyecto",
+            joinColumns = @JoinColumn(name = "proyecto_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "tecnologia_id", referencedColumnName = "id")
+    )
+    private List<Tecnologia> tecnologias;
 
     public Proyecto() {
 

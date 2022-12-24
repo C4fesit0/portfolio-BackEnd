@@ -1,6 +1,7 @@
 package com.backend.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,16 +25,18 @@ public class Persona {
     private String foto_perfil;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "persona", cascade = CascadeType.ALL)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     List<Educacion> educacion;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "autor", cascade = CascadeType.ALL)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     List<Proyecto> proyectos;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "tecnologia_persona",
             joinColumns = @JoinColumn(name = "persona_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "tecnoligia_id", referencedColumnName = "id")
+            inverseJoinColumns = @JoinColumn(name = "tecnologia_id", referencedColumnName = "id")
     )
     private List<Tecnologia> tecnologias;
 
