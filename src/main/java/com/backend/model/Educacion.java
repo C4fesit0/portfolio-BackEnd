@@ -27,6 +27,7 @@ public class Educacion {
     Persona persona;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "id_nivel_estudio")
     NivelEstudio nivel;
 

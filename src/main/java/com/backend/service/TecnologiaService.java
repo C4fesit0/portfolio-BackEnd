@@ -38,4 +38,9 @@ public class TecnologiaService implements ITecnologiaService{
         }
     }
 
+    @Override
+    public Tecnologia getTecnologia(Long id){
+        return tecnologiaRepository.findById(id).orElse(null);
+    }
+
 }

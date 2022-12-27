@@ -5,7 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter @Setter
@@ -26,13 +28,14 @@ public class Proyecto {
     @JoinColumn(name = "autor")
     Persona autor;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE })
     @JoinTable(
             name = "tecnologia_proyecto",
-            joinColumns = @JoinColumn(name = "proyecto_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "tecnologia_id", referencedColumnName = "id")
+            joinColumns = @JoinColumn(name = "proyecto_id"),
+            inverseJoinColumns = @JoinColumn(name = "tecnologia_id")
     )
-    private List<Tecnologia> tecnologias;
+    private Set<Tecnologia> tecnologias = new HashSet<>();
+
 
     public Proyecto() {
 

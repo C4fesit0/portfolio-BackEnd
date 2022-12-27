@@ -6,7 +6,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Setter @Getter
@@ -23,23 +25,14 @@ public class Tecnologia {
     @JoinColumn(name = "id_rol")
     private Rol rol;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JsonBackReference
-    @JoinTable(
-            name = "tecnologia_persona",
-            joinColumns = @JoinColumn(name = "tecnologia_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "persona_id", referencedColumnName = "id")
-    )
-    private List<Persona> personas;
+    @ManyToMany(mappedBy = "tecnologias")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private Set<Persona> personas = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JsonBackReference
-    @JoinTable(
-            name = "tecnologia_proyecto",
-            joinColumns = @JoinColumn(name = "tecnologia_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "proyecto_id", referencedColumnName = "id")
-    )
-    private List<Proyecto> proyectos;
+    @ManyToMany(mappedBy = "tecnologias")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private Set<Proyecto> proyectos = new HashSet<>();
+
 
     public Tecnologia(String nombre, String logo, Rol rol) {
         this.nombre = nombre;

@@ -9,6 +9,8 @@ import com.backend.service.INivelEstudioService;
 import com.backend.service.IPersonaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
@@ -28,8 +30,9 @@ public class EducacionController {
     INivelEstudioService nivelEstudioService;
 
     @GetMapping("/")
-    public List<Educacion> listarEducacion(){
-        return educacionService.listEducacion();
+    public ResponseEntity<List<Educacion>> listarEducacion(){
+        List<Educacion> list = educacionService.listEducacion();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @PostMapping("/crear")
@@ -37,15 +40,7 @@ public class EducacionController {
         Long id_persona = data.getId_persona();
         Persona persona = personaService.getPersona(id_persona);
 
-
-        System.out.println(data.getId_persona());
-        System.out.println(data.getTitulo());
-        System.out.println(data.getInstitucion());
-        System.out.println(data.getFecha_final());
-        System.out.println(data.getFecha_inicio());
-        System.out.println(data.getId_nivel_estudio());
-
-        
+        NivelEstudio ne = nivelEstudioService.getNivelEstudio(data.getId_nivel_estudio());
 
         String fecha1 = data.getFecha_final();
         Date fechaFinal= Date.valueOf(fecha1);
@@ -56,21 +51,45 @@ public class EducacionController {
         Educacion educacion = new Educacion(data.getTitulo(),fechaFinal,fechaInicio,
                                 data.getActualidad(),data.getInstitucion(),data.getImagen());
 
+        educacion.setNivel(ne);
         educacion.setPersona(persona);
-        NivelEstudio nivel = nivelEstudioService.getNivelEstudio(data.getId_nivel_estudio());
-        educacion.setNivel(nivel);
-        
-        List<Educacion> educacionLista = persona.getEducacion();
-        educacionLista.add(educacion);
-        
-        persona.setEducacion(educacionLista);
-        
+        educacionService.createEducacion(educacion);
+        persona.addEducacion(educacion);
+        personaService.updatePersona(persona);
+
         persona.getEducacion().forEach(x -> {
             System.out.println(x.getTitulo());
          });
 
          System.out.println(persona.getId());
 
-        personaService.updatePersona(persona);
     }
+
+    @PutMapping("actuailizar/{id}")
+    public void actualizarEducacion(@PathVariable("id")Long id,@RequestBody EducacionDto data){
+        Educacion educacion = educacionService.getEducacion(id);
+        educacion.setTitulo(data.getTitulo());
+        educacion.setActualidad(data.getActualidad());
+        educacion.setImagen(data.getImagen());
+
+        String fecha1 = data.getFecha_final();
+        Date fechaFinal= Date.valueOf(fecha1);
+
+        String fecha2 = data.getFecha_inicio();
+        Date fechaInicio= Date.valueOf(fecha2);
+
+        educacion.setFecha_final(fechaFinal);
+        educacion.setFecha_inicio(fechaInicio);
+        educacion.setInstitucion(data.getInstitucion());
+        educacion.setImagen(data.getImagen());
+        educacionService.updateEducacion(educacion);
+    }
+
+
+    @DeleteMapping("/eliminar/{id}")
+    public void eliminarEducacion(@PathVariable("id")Long id){
+        Educacion educacion = educacionService.getEducacion(id);
+        educacionService.deleteEducacion(educacion);
+    }
+
 }
