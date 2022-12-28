@@ -10,7 +10,6 @@ import com.backend.repository.TecnologiaRepository;
 import com.backend.service.IPersonaService;
 import com.backend.service.IProyectoService;
 import com.backend.service.ITecnologiaService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
