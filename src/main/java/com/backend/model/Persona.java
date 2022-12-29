@@ -35,6 +35,10 @@ public class Persona {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     Set<Proyecto> proyectos =  new HashSet<>();
 
+    @OneToMany(mappedBy = "persona", cascade = CascadeType.ALL)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    Set<Experiencia> experiencias =  new HashSet<>();
+
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE })
     @JoinTable(
             name = "tecnologia_persona",
@@ -78,6 +82,11 @@ public class Persona {
 
     public Persona addProyecto(Proyecto proyecto){
         this.proyectos.add(proyecto);
+        return this;
+    }
+
+    public Persona addExperiencia(Experiencia experiencia){
+        this.experiencias.add(experiencia);
         return this;
     }
 
