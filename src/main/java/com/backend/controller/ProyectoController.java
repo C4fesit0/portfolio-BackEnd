@@ -21,6 +21,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/proyecto")
+@CrossOrigin(origins = "http://localhost:4200/")
 public class ProyectoController {
 
     @Autowired
