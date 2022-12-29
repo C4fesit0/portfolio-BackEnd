@@ -17,6 +17,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/tecnologia")
+@CrossOrigin(origins = "http://localhost:4200/")
 public class TecnologiaController {
 
     @Autowired
@@ -68,6 +69,16 @@ public class TecnologiaController {
 
 
         return new ResponseEntity<>(list,HttpStatus.OK);
+    }
+
+    @PutMapping("actualizar/{id}")
+    public void actualizarTecnologia(@PathVariable("id")Long id, @RequestBody TecnologiaDto body){
+        Tecnologia t =  tecnologiaService.getTecnologia(id);
+        t.setNombre(body.getNombre());
+        t.setLogo(body.getLogo());
+        Rol r = rolService.getRol(body.getRol());
+        t.setRol(r);
+        tecnologiaService.updateTecnologia(t);
     }
 
     @DeleteMapping("/eliminar/{id}")

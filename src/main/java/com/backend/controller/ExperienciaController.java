@@ -13,12 +13,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/experiencia")
+@CrossOrigin(origins = "http://localhost:4200/")
 public class ExperienciaController {
 
     @Autowired

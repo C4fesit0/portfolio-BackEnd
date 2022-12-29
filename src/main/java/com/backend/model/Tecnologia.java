@@ -1,5 +1,6 @@
 package com.backend.model;
 
+import com.backend.dto.TecnologiaDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -40,4 +41,5 @@ public class Tecnologia {
         this.rol = rol;
     }
     public Tecnologia() {}
+
 }
