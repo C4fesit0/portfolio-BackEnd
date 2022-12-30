@@ -1,0 +1,40 @@
+package com.backend.controller;
+
+import ch.qos.logback.core.net.SyslogOutputStream;
+import com.backend.dto.LoginDto;
+import com.backend.model.User;
+import com.backend.repository.UserRepository;
+import com.backend.service.IUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/usuario")
+public class UserController {
+
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    IUserService userService;
+
+    @PostMapping("/login")
+    public boolean login(@RequestBody LoginDto data){
+        boolean existe=false;
+        if(data.getEmail()!= null && data.getPassword()!=null){
+        existe =  userRepository.existsByEmailAndPassword(data.getEmail(), data.getPassword());
+         System.out.println(existe);
+     }
+     return existe;
+    }
+
+    @PostMapping("/crear")
+    public void crearUsuario(@RequestBody User data){
+        if(data.getEmail()!= null && data.getPassword()!=null){
+            User usuario= new User(data.getEmail(), data.getPassword(),data.getAdmin());
+            userService.createUser(usuario);
+            System.out.println(usuario.getEmail());
+        }
+
+    }
+}
+
