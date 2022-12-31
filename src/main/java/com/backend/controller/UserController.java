@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/usuario")
+@CrossOrigin(origins= "http://localhost:4200/")
 public class UserController {
 
     @Autowired
@@ -20,6 +21,7 @@ public class UserController {
     @PostMapping("/login")
     public boolean login(@RequestBody LoginDto data){
         boolean existe=false;
+        System.out.println(data.getEmail()+"=="+data.getPassword());
         if(data.getEmail()!= null && data.getPassword()!=null){
         existe =  userRepository.existsByEmailAndPassword(data.getEmail(), data.getPassword());
          System.out.println(existe);
@@ -38,11 +40,12 @@ public class UserController {
     }
 
     @PutMapping("/actualizar/{id}")
-    public void actualizarDatos(@PathVariable("id")Long id,@RequestBody LoginDto data){
+    public User actualizarDatos(@PathVariable("id")Long id,@RequestBody LoginDto data){
         User user = userService.getUser(id);
         user.setEmail(data.getEmail());
         user.setPassword(data.getPassword());
         userService.updateUser(user);
+        return user;
     }
 }
 
