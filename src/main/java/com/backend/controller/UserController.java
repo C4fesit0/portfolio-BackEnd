@@ -36,5 +36,13 @@ public class UserController {
         }
 
     }
+
+    @PutMapping("/actualizar/{id}")
+    public void actualizarDatos(@PathVariable("id")Long id,@RequestBody LoginDto data){
+        User user = userService.getUser(id);
+        user.setEmail(data.getEmail());
+        user.setPassword(data.getPassword());
+        userService.updateUser(user);
+    }
 }
 
