@@ -6,10 +6,18 @@ import com.backend.model.Persona;
 import com.backend.service.IPersonaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 
 @RestController
@@ -36,18 +44,63 @@ public class PersonaController {
     }
 
     @PutMapping("/actualizar")
-    public void patchPersona(@RequestBody PersonaDto persona){
+    public ResponseEntity<String> patchPersona(@RequestBody PersonaDto persona){
         Persona persona1 = personaService.getPersona(1L);
+        String status = new String("No se pudo actualizar la informacion");
         if(persona1 == null){
             System.err.println("No existe la persona");
         }else{
             persona1.setPerfil(persona);
             personaService.updatePersona(persona1);
+            status = "Se actualizo el perfil";
         }
+        return new ResponseEntity<>(status,HttpStatus.OK);
     }
 
     @DeleteMapping("/eliminar/{id}")
     public void deletePersona(@PathVariable Long id){
         personaService.deletePersona(id);
     }
+
+    @PostMapping("/upload")
+    public ResponseEntity<Persona> upload(@RequestParam("file")MultipartFile archivo, @RequestParam("id")Long id){
+        Persona response = personaService.getPersona(id);
+
+        if (!archivo.isEmpty()){
+            String nombre_archivo = UUID.randomUUID().toString()+"_"+archivo.getOriginalFilename().replace(" ","");
+            Path ruta_archivo = Paths.get("images").resolve(nombre_archivo).toAbsolutePath();
+            try {
+                Files.copy(archivo.getInputStream(),ruta_archivo);
+            } catch (IOException e) {
+                System.err.println("ERROR al subir la imagen");
+                return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            response.setFoto_perfil(nombre_archivo);
+            personaService.updatePersona(response);
+        }
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "/image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<?> getImagen(@PathVariable("id")Long id){
+        Persona persona = personaService.getPersona(id);
+
+        if(persona == null){
+            return new ResponseEntity<>("Persona null" , HttpStatus.INTERNAL_SERVER_ERROR);
+        }else{
+            Path ruta = Paths.get("images").resolve(persona.getFoto_perfil()).toAbsolutePath();
+            System.out.println(ruta.toString());
+            byte[] data;
+            try {
+                data = Files.readAllBytes(new File(ruta.toString()).toPath());
+            } catch (IOException e) {
+                System.err.println("ERROR al buscar el archivo");
+                throw new RuntimeException(e);
+            }
+            return new ResponseEntity<>(data,HttpStatus.OK);
+        }
+
+
+    }
+
 }
