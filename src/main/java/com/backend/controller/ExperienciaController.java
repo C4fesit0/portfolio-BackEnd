@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -34,22 +35,15 @@ public class ExperienciaController {
     @PostMapping("/crear")
     public void crearExperiencia(@RequestBody ExperienciaDto data){
         System.out.println(data.getPuesto());
-        /*
-        String fecha1 = data.getFecha_final();
-        Date fechaFinal= Date.valueOf(fecha1);
-
-        String fecha2 = data.getFecha_inicio();
-        Date fechaInicio= Date.valueOf(fecha2);
-
-        Experiencia e = new Experiencia(data.getPuesto(),data.getEmpresa(),
-                fechaInicio,fechaFinal,data.getActualidad(), data.getDescripcion(),
-                data.getImagen());*/
+        System.out.println(data.getFecha_final());
+        System.out.println(data.getActualidad());
+        System.out.println(data.getFecha_inicio());
         Experiencia e = new Experiencia();
-        e.setExperienciaInfo(data);
+        /*e.setExperienciaInfo(data);
         Persona p = personaService.getPersona(data.getId_persona());
         e.setPersona(p);
         p.addExperiencia(e);
-        experienciaService.crearExpereriencia(e);
+        experienciaService.crearExpereriencia(e);*/
         System.out.println("Experiencia Creada");
     }
 
@@ -63,5 +57,10 @@ public class ExperienciaController {
     @DeleteMapping("/eliminar/{id}")
     public void eliminarExperiencia(@PathVariable("id")Long id){
         experienciaService.eliminarExperiencia(id);
+    }
+
+    @PostMapping("/upload/{id}")
+    public void subirLogo(@PathVariable("id")Long id, @RequestParam("file") MultipartFile logo){
+
     }
 }

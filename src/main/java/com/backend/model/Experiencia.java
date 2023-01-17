@@ -1,6 +1,7 @@
 package com.backend.model;
 
 import com.backend.dto.ExperienciaDto;
+import com.backend.util.date.Fecha;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -47,16 +48,19 @@ public class Experiencia {
         this.puesto = data.getPuesto();
         this.empresa = data.getEmpresa();
         this.actualidad = data.getActualidad();
-        String fecha1 = data.getFecha_final();
-        Date fechaFinal= Date.valueOf(fecha1);
-        String fecha2 = data.getFecha_inicio();
-        Date fechaInicio= Date.valueOf(fecha2);
-        this.fecha_final = fechaFinal;
+        Date fechaInicio=  Fecha.convertir(data.getFecha_inicio());
         this.fecha_inicio = fechaInicio;
+        if(!this.actualidad){
+            Date fechaFinal=  Fecha.convertir(data.getFecha_final());
+            this.fecha_final = fechaFinal;
+        }else{
+            this.fecha_final = null;
+        }
         this.descripcion = data.getDescripcion();
         this.imagen = data.getImagen();
 
         return this;
     }
+
 
 }
