@@ -33,18 +33,19 @@ public class ExperienciaController {
     }
 
     @PostMapping("/crear")
-    public void crearExperiencia(@RequestBody ExperienciaDto data){
+    public ResponseEntity<Experiencia> crearExperiencia(@RequestBody ExperienciaDto data){
         System.out.println(data.getPuesto());
         System.out.println(data.getFecha_final());
         System.out.println(data.getActualidad());
         System.out.println(data.getFecha_inicio());
         Experiencia e = new Experiencia();
-        /*e.setExperienciaInfo(data);
+        e.setExperienciaInfo(data);
         Persona p = personaService.getPersona(data.getId_persona());
         e.setPersona(p);
         p.addExperiencia(e);
-        experienciaService.crearExpereriencia(e);*/
+        experienciaService.crearExpereriencia(e);
         System.out.println("Experiencia Creada");
+        return new ResponseEntity<>(e,HttpStatus.OK);
     }
 
     @PutMapping("/actualizar/{id}")
@@ -55,8 +56,9 @@ public class ExperienciaController {
     }
 
     @DeleteMapping("/eliminar/{id}")
-    public void eliminarExperiencia(@PathVariable("id")Long id){
+    public ResponseEntity<?> eliminarExperiencia(@PathVariable("id")Long id){
         experienciaService.eliminarExperiencia(id);
+        return new ResponseEntity<>(true,HttpStatus.OK);
     }
 
     @PostMapping("/upload/{id}")
