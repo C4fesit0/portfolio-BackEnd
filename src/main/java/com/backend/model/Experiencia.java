@@ -55,6 +55,7 @@ public class Experiencia {
             this.fecha_final = fechaFinal;
         }else{
             this.fecha_final = null;
+            this.actualidad=true;
         }
         this.descripcion = data.getDescripcion();
         this.imagen = data.getImagen();
