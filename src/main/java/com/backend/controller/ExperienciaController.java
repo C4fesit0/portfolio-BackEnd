@@ -10,11 +10,18 @@ import com.backend.service.IExperienciaService;
 import com.backend.service.IPersonaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/experiencia")
@@ -62,7 +69,43 @@ public class ExperienciaController {
     }
 
     @PostMapping("/upload/{id}")
-    public void subirLogo(@PathVariable("id")Long id, @RequestParam("file") MultipartFile logo){
+    public ResponseEntity<Experiencia> upload(@RequestParam("file")MultipartFile archivo, @PathVariable("id")Long id){
+        Experiencia response = experienciaService.getExperiencia(id);
+
+        if (!archivo.isEmpty()){
+            String nombre_archivo = UUID.randomUUID().toString()+"_"+archivo.getOriginalFilename().replace(" ","");
+            Path ruta_archivo = Paths.get("images").resolve(nombre_archivo).toAbsolutePath();
+            try {
+                Files.copy(archivo.getInputStream(),ruta_archivo);
+            } catch (IOException e) {
+                System.err.println("ERROR al subir la imagen");
+                return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            response.setImagen(nombre_archivo);
+            experienciaService.actualizarExperiencia(response);
+        }
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "/image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<?> getImage(@PathVariable("id")Long id){
+        Experiencia experiencia = experienciaService.getExperiencia(id);
+
+        if(experiencia == null){
+            return new ResponseEntity<>("Experiencia null" , HttpStatus.INTERNAL_SERVER_ERROR);
+        }else{
+            Path ruta = Paths.get("images").resolve(experiencia.getImagen()).toAbsolutePath();
+            System.out.println(ruta.toString());
+            byte[] data;
+            try {
+                data = Files.readAllBytes(new File(ruta.toString()).toPath());
+            } catch (IOException e) {
+                System.err.println("ERROR al buscar la imagen de experiencia ID:"+experiencia.getId());
+                throw new RuntimeException(e);
+            }
+            return new ResponseEntity<>(data,HttpStatus.OK);
+        }
+
 
     }
 }
