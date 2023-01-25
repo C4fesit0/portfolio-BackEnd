@@ -95,6 +95,7 @@ public class PersonaController {
                 data = Files.readAllBytes(new File(ruta.toString()).toPath());
             } catch (IOException e) {
                 System.err.println("ERROR al buscar el archivo");
+                System.err.println(persona.getFoto_perfil());
                 throw new RuntimeException(e);
             }
             return new ResponseEntity<>(data,HttpStatus.OK);

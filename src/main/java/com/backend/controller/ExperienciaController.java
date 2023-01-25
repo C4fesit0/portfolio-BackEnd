@@ -56,10 +56,21 @@ public class ExperienciaController {
     }
 
     @PutMapping("/actualizar/{id}")
-    public void actualizarExperiencia(@PathVariable("id") Long id, @RequestBody ExperienciaDto data){
-        Experiencia e = experienciaService.getExperiencia(id);
-        e.setExperienciaInfo(data);
-        experienciaService.actualizarExperiencia(e);
+    public ResponseEntity<Experiencia> actualizarExperiencia(@PathVariable("id") Long id, @RequestBody ExperienciaDto data){
+        Experiencia response = experienciaService.getExperiencia(id);
+        if(response != null){
+            try {
+                response.setExperienciaInfo(data);
+                experienciaService.actualizarExperiencia(response);
+            }catch (Exception e){
+                System.err.println(e);
+                return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        }else{
+            System.err.println("Problema al obtener la experiencia");
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("/eliminar/{id}")
@@ -101,6 +112,7 @@ public class ExperienciaController {
                 data = Files.readAllBytes(new File(ruta.toString()).toPath());
             } catch (IOException e) {
                 System.err.println("ERROR al buscar la imagen de experiencia ID:"+experiencia.getId());
+                System.err.println(experiencia.getImagen());
                 throw new RuntimeException(e);
             }
             return new ResponseEntity<>(data,HttpStatus.OK);
