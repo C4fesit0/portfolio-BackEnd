@@ -8,6 +8,7 @@ import com.backend.service.IEducacionService;
 import com.backend.service.INivelEstudioService;
 import com.backend.service.IPersonaService;
 
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class EducacionController {
     }
 
     @PostMapping("/crear")
-    public void crearEducacion(@RequestBody EducacionDto data){
+    public ResponseEntity<Educacion> crearEducacion(@RequestBody EducacionDto data){
         Long id_persona = data.getId_persona();
         Persona persona = personaService.getPersona(id_persona);
 
@@ -64,6 +65,7 @@ public class EducacionController {
 
          System.out.println(persona.getId());
 
+         return new ResponseEntity<>(educacion,HttpStatus.OK);
     }
 
     @PutMapping("actuailizar/{id}")
