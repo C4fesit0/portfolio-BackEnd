@@ -1,5 +1,8 @@
 package com.backend.model;
 
+import com.backend.dto.EducacionDto;
+import com.backend.dto.ExperienciaDto;
+import com.backend.util.date.Fecha;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -43,6 +46,22 @@ public class Educacion {
         this.actualidad = actualidad;
         this.institucion = institucion;
         this.imagen = imagen;
+    }
+
+    public Educacion setEducacionInfo(EducacionDto data){
+        this.titulo = data.getTitulo();
+        this.institucion = data.getInstitucion();
+        Date fecha_inicio = Fecha.convertir(data.getFecha_inicio());
+        this.fecha_inicio = fecha_inicio;
+        this.actualidad = data.getActualidad();
+        if(data.getActualidad()){
+            this.fecha_final = null;
+        }else if(!data.getActualidad()){
+            Date fecha_final = Fecha.convertir(data.getFecha_final());
+            this.fecha_final = fecha_final;
+        }
+        this.imagen = data.getImagen();
+        return this;
     }
 
     

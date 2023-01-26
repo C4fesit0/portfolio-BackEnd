@@ -2,6 +2,7 @@ package com.backend.controller;
 
 import com.backend.dto.EducacionDto;
 import com.backend.model.Educacion;
+import com.backend.model.Experiencia;
 import com.backend.model.NivelEstudio;
 import com.backend.model.Persona;
 import com.backend.service.IEducacionService;
@@ -11,11 +12,19 @@ import com.backend.service.IPersonaService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Date;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/educacion")
@@ -42,18 +51,13 @@ public class EducacionController {
         Long id_persona = data.getId_persona();
         Persona persona = personaService.getPersona(id_persona);
 
-        NivelEstudio ne = nivelEstudioService.getNivelEstudio(data.getId_nivel_estudio());
-
-        String fecha1 = data.getFecha_final();
-        Date fechaFinal= Date.valueOf(fecha1);
-
-        String fecha2 = data.getFecha_inicio();
-        Date fechaInicio= Date.valueOf(fecha2);
+        NivelEstudio nivelEstudio = nivelEstudioService.getNivelEstudio(data.getId_nivel_estudio());
         
-        Educacion educacion = new Educacion(data.getTitulo(),fechaFinal,fechaInicio,
-                                data.getActualidad(),data.getInstitucion(),data.getImagen());
+        Educacion educacion = new Educacion();
 
-        educacion.setNivel(ne);
+        educacion = educacion.setEducacionInfo(data);
+
+        educacion.setNivel(nivelEstudio);
         educacion.setPersona(persona);
         educacionService.createEducacion(educacion);
         persona.addEducacion(educacion);
@@ -93,6 +97,48 @@ public class EducacionController {
     public void eliminarEducacion(@PathVariable("id")Long id){
         Educacion educacion = educacionService.getEducacion(id);
         educacionService.deleteEducacion(educacion);
+    }
+
+    @PostMapping("/upload/{id}")
+    public ResponseEntity<Educacion> upload(@RequestParam("file") MultipartFile archivo, @PathVariable("id")Long id){
+        Educacion response = educacionService.getEducacion(id);
+
+        if (!archivo.isEmpty()){
+            String nombre_archivo = UUID.randomUUID().toString()+"_"+archivo.getOriginalFilename().replace(" ","");
+            Path ruta_archivo = Paths.get("images").resolve(nombre_archivo).toAbsolutePath();
+            try {
+                Files.copy(archivo.getInputStream(),ruta_archivo);
+            } catch (IOException e) {
+                System.err.println("ERROR al subir la imagen");
+                return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            response.setImagen(nombre_archivo);
+            educacionService.updateEducacion(response);
+        }
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "/image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<?> getImage(@PathVariable("id")Long id){
+        Educacion educacion = educacionService.getEducacion(id);
+
+        if(educacion == null){
+            return new ResponseEntity<>("Experiencia null" , HttpStatus.INTERNAL_SERVER_ERROR);
+        }else{
+            Path ruta = Paths.get("images").resolve(educacion.getImagen()).toAbsolutePath();
+            System.out.println(ruta.toString());
+            byte[] data;
+            try {
+                data = Files.readAllBytes(new File(ruta.toString()).toPath());
+            } catch (IOException e) {
+                System.err.println("ERROR al buscar la imagen de experiencia ID:"+educacion.getId());
+                System.err.println(educacion.getImagen());
+                throw new RuntimeException(e);
+            }
+            return new ResponseEntity<>(data,HttpStatus.OK);
+        }
+
+
     }
 
 }
