@@ -48,6 +48,10 @@ public class EducacionController {
 
     @PostMapping("/crear")
     public ResponseEntity<Educacion> crearEducacion(@RequestBody EducacionDto data){
+
+        System.out.println(data.getActualidad());
+        System.out.println(data.getFecha_final());
+
         Long id_persona = data.getId_persona();
         Persona persona = personaService.getPersona(id_persona);
 
@@ -75,20 +79,9 @@ public class EducacionController {
     @PutMapping("actuailizar/{id}")
     public void actualizarEducacion(@PathVariable("id")Long id,@RequestBody EducacionDto data){
         Educacion educacion = educacionService.getEducacion(id);
-        educacion.setTitulo(data.getTitulo());
-        educacion.setActualidad(data.getActualidad());
-        educacion.setImagen(data.getImagen());
-
-        String fecha1 = data.getFecha_final();
-        Date fechaFinal= Date.valueOf(fecha1);
-
-        String fecha2 = data.getFecha_inicio();
-        Date fechaInicio= Date.valueOf(fecha2);
-
-        educacion.setFecha_final(fechaFinal);
-        educacion.setFecha_inicio(fechaInicio);
-        educacion.setInstitucion(data.getInstitucion());
-        educacion.setImagen(data.getImagen());
+        educacion = educacion.setEducacionInfo(data);
+        NivelEstudio nivelEstudio = nivelEstudioService.getNivelEstudio(data.getId_nivel_estudio());
+        educacion.setNivel(nivelEstudio);
         educacionService.updateEducacion(educacion);
     }
 

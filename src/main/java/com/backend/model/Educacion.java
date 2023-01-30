@@ -29,8 +29,8 @@ public class Educacion {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     Persona persona;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JoinColumn(name = "id_nivel_estudio")
     NivelEstudio nivel;
 
@@ -54,9 +54,9 @@ public class Educacion {
         Date fecha_inicio = Fecha.convertir(data.getFecha_inicio());
         this.fecha_inicio = fecha_inicio;
         this.actualidad = data.getActualidad();
-        if(data.getActualidad()){
+        if(this.actualidad){
             this.fecha_final = null;
-        }else if(!data.getActualidad()){
+        }else{
             Date fecha_final = Fecha.convertir(data.getFecha_final());
             this.fecha_final = fecha_final;
         }
