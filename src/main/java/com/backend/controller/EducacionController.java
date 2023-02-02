@@ -76,13 +76,14 @@ public class EducacionController {
          return new ResponseEntity<>(educacion,HttpStatus.OK);
     }
 
-    @PutMapping("actuailizar/{id}")
-    public void actualizarEducacion(@PathVariable("id")Long id,@RequestBody EducacionDto data){
+    @PutMapping("actualizar/{id}")
+    public ResponseEntity<Educacion> actualizarEducacion(@PathVariable("id")Long id,@RequestBody EducacionDto data){
         Educacion educacion = educacionService.getEducacion(id);
         educacion = educacion.setEducacionInfo(data);
         NivelEstudio nivelEstudio = nivelEstudioService.getNivelEstudio(data.getId_nivel_estudio());
         educacion.setNivel(nivelEstudio);
         educacionService.updateEducacion(educacion);
+        return new ResponseEntity<>(educacion,HttpStatus.OK);
     }
 
 
