@@ -7,6 +7,7 @@ import com.backend.model.Tecnologia;
 import com.backend.service.IPersonaService;
 import com.backend.service.IRolService;
 import com.backend.service.ITecnologiaService;
+import org.hibernate.mapping.Any;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,11 +44,12 @@ public class TecnologiaController {
 
 
     @PostMapping("/crear")
-    public void createTecnologia(@RequestBody TecnologiaDto data){
+    public ResponseEntity<?> createTecnologia(@RequestBody TecnologiaDto data){
 
         Persona persona =personaService.getPersona(1L);
         if(persona == null){
             System.out.println("No existe la persona");
+            return new ResponseEntity<String>("No existe la persona",HttpStatus.INTERNAL_SERVER_ERROR);
         }else{
             Rol rol = rolService.getRol(data.getRol());
             Tecnologia tecnologia = new Tecnologia(data.getNombre(),data.getLogo(),rol);
@@ -56,6 +58,7 @@ public class TecnologiaController {
             tecnologias.add(tecnologia);
             persona.setTecnologias(tecnologias);
             personaService.updatePersona(persona);
+            return new ResponseEntity<Tecnologia>(tecnologia,HttpStatus.OK);
         }
     }
 
@@ -72,22 +75,29 @@ public class TecnologiaController {
     }
 
     @PutMapping("actualizar/{id}")
-    public void actualizarTecnologia(@PathVariable("id")Long id, @RequestBody TecnologiaDto body){
+    public ResponseEntity<?> actualizarTecnologia(@PathVariable("id")Long id, @RequestBody TecnologiaDto body){
         Tecnologia t =  tecnologiaService.getTecnologia(id);
         t.setNombre(body.getNombre());
         t.setLogo(body.getLogo());
         Rol r = rolService.getRol(body.getRol());
         t.setRol(r);
         tecnologiaService.updateTecnologia(t);
+        return new ResponseEntity<>(t,HttpStatus.OK);
     }
 
     @DeleteMapping("/eliminar/{id}")
-    public void eliminarTecnologia(@PathVariable("id") Long id){
-        Persona p = personaService.getPersona(1L);
-        Tecnologia t = tecnologiaService.getTecnologia(id);
-        p.getTecnologias().remove(t);
-        personaService.updatePersona(p);
-        tecnologiaService.deleteTecnologia(id);
+    public ResponseEntity<?> eliminarTecnologia(@PathVariable("id") Long id){
+        try {
+            Persona p = personaService.getPersona(1L);
+            Tecnologia t = tecnologiaService.getTecnologia(id);
+            p.getTecnologias().remove(t);
+            personaService.updatePersona(p);
+            tecnologiaService.deleteTecnologia(id);
+            return new ResponseEntity<>(t,HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println("ERROR al eliminar tecnoliga ID:"+id);
+            return  new ResponseEntity<>("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

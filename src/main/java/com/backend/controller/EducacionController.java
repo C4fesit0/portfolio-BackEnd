@@ -99,9 +99,9 @@ public class EducacionController {
 
         if (!archivo.isEmpty()){
             String nombre_archivo = UUID.randomUUID().toString()+"_"+archivo.getOriginalFilename().replace(" ","");
-            Path ruta_archivo = Paths.get("images").resolve(nombre_archivo).toAbsolutePath();
+            Path rutaArchivo = Paths.get("images").resolve(nombre_archivo).toAbsolutePath();
             try {
-                Files.copy(archivo.getInputStream(),ruta_archivo);
+                Files.copy(archivo.getInputStream(),rutaArchivo);
             } catch (IOException e) {
                 System.err.println("ERROR al subir la imagen");
                 return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
