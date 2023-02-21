@@ -44,17 +44,19 @@ public class PersonaController {
     }
 
     @PutMapping("/actualizar")
-    public ResponseEntity<String> patchPersona(@RequestBody PersonaDto persona){
-        Persona persona1 = personaService.getPersona(1L);
-        String status = new String("No se pudo actualizar la informacion");
-        if(persona1 == null){
-            System.err.println("No existe la persona");
-        }else{
-            persona1.setPerfil(persona);
-            personaService.updatePersona(persona1);
-            status = "Se actualizo el perfil";
+    public ResponseEntity<?> patchPersona(@RequestBody PersonaDto persona){
+
+        try {
+            Persona response = personaService.getPersona(1L);
+            response.setPerfil(persona);
+            personaService.updatePersona(response);
+            return new ResponseEntity<>(response,HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println(e);
+            String error = "ERROR";
+            return new ResponseEntity<>(error,HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(status,HttpStatus.OK);
+
     }
 
     @DeleteMapping("/eliminar/{id}")

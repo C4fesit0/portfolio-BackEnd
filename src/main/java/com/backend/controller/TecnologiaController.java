@@ -7,7 +7,6 @@ import com.backend.model.Tecnologia;
 import com.backend.service.IPersonaService;
 import com.backend.service.IRolService;
 import com.backend.service.ITecnologiaService;
-import org.hibernate.mapping.Any;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,7 +68,6 @@ public class TecnologiaController {
         list.forEach(tecnologia -> {
             System.out.println(tecnologia.getNombre());
         });
-
 
         return new ResponseEntity<>(list,HttpStatus.OK);
     }
