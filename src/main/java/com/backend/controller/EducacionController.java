@@ -77,13 +77,23 @@ public class EducacionController {
     }
 
     @PutMapping("actualizar/{id}")
-    public ResponseEntity<Educacion> actualizarEducacion(@PathVariable("id")Long id,@RequestBody EducacionDto data){
-        Educacion educacion = educacionService.getEducacion(id);
-        educacion = educacion.setEducacionInfo(data);
-        NivelEstudio nivelEstudio = nivelEstudioService.getNivelEstudio(data.getId_nivel_estudio());
-        educacion.setNivel(nivelEstudio);
-        educacionService.updateEducacion(educacion);
-        return new ResponseEntity<>(educacion,HttpStatus.OK);
+    public ResponseEntity<?> actualizarEducacion(@PathVariable("id")Long id,@RequestBody EducacionDto data){
+       /*try {*/
+           Educacion educacion = educacionService.getEducacion(id);
+
+           System.out.println(educacion.getInstitucion());
+           System.out.println(educacion.getFecha_inicio());
+           System.out.println(educacion.getFecha_final());
+
+           educacion = educacion.setEducacionInfo(data);
+           NivelEstudio nivelEstudio = nivelEstudioService.getNivelEstudio(data.getId_nivel_estudio());
+           educacion.setNivel(nivelEstudio);
+           educacionService.updateEducacion(educacion);
+           return new ResponseEntity<>(educacion,HttpStatus.OK);
+       /*}catch (Exception e){
+           System.err.println(e);
+           return new ResponseEntity<>(e,HttpStatus.INTERNAL_SERVER_ERROR);
+       }*/
     }
 
 
