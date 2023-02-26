@@ -12,12 +12,20 @@ import com.backend.service.IProyectoService;
 import com.backend.service.ITecnologiaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/proyecto")
@@ -38,7 +46,7 @@ public class ProyectoController {
     private ITecnologiaService tecnologiaService;
 
     @PostMapping("/crear")
-    public void crearProyecto(@RequestBody ProyectoDto proyectoData){
+    public ResponseEntity<?> crearProyecto(@RequestBody ProyectoDto proyectoData){
         Persona autor = personaService.getPersona(1L);
         Set<Proyecto> proyectoList =  autor.getProyectos();
 
@@ -49,6 +57,7 @@ public class ProyectoController {
         proyecto.getTecnologias().addAll(t);
         proyectoService.createProyecto(proyecto);
         System.out.println("Proyecto agregado - Persona ID: "+autor.getId());
+        return new ResponseEntity<>(proyecto,HttpStatus.OK);
     }
 
     @GetMapping("/listar")
@@ -88,4 +97,45 @@ public class ProyectoController {
         proyectoService.deleteProyecto(id);
     }
 
+    @PostMapping("/upload")
+    public ResponseEntity<Proyecto> upload(@RequestParam("file") MultipartFile archivo, @RequestParam("id")Long id){
+        Proyecto response = proyectoService.getProyecto(id);
+
+        if (!archivo.isEmpty()){
+            String nombre_archivo = UUID.randomUUID().toString()+"_"+archivo.getOriginalFilename().replace(" ","");
+            Path ruta_archivo = Paths.get("images").resolve(nombre_archivo).toAbsolutePath();
+            try {
+                Files.copy(archivo.getInputStream(),ruta_archivo);
+            } catch (IOException e) {
+                System.err.println("ERROR al subir la imagen");
+                return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            response.setImage(nombre_archivo);
+            proyectoService.updateProyecto(response);
+        }
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "/image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<?> getImagen(@PathVariable("id")Long id){
+        Proyecto proyecto = proyectoService.getProyecto(id);
+
+        if(proyecto == null){
+            return new ResponseEntity<>("Persona null" , HttpStatus.INTERNAL_SERVER_ERROR);
+        }else{
+            Path ruta = Paths.get("images").resolve(proyecto.getImage()).toAbsolutePath();
+            System.out.println(ruta.toString());
+            byte[] data;
+            try {
+                data = Files.readAllBytes(new File(ruta.toString()).toPath());
+            } catch (IOException e) {
+                System.err.println("ERROR al buscar el archivo");
+                System.err.println(proyecto.getImage());
+                throw new RuntimeException(e);
+            }
+            return new ResponseEntity<>(data,HttpStatus.OK);
+        }
+
+
+    }
 }
