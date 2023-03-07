@@ -29,7 +29,8 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/proyecto")
-@CrossOrigin(origins = "http://localhost:4200/")
+//@CrossOrigin(origins = "http://localhost:4200/")
+@CrossOrigin(origins ="https://port-front.firebaseapp.com/")
 public class ProyectoController {
 
     @Autowired
