@@ -22,7 +22,8 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/persona")
-@CrossOrigin(origins = "http://localhost:4200/")
+//@CrossOrigin(origins = "http://localhost:4200/")
+@CrossOrigin(origins = "https://port-front.firebaseapp.com/")
 public class PersonaController {
 
     @Autowired

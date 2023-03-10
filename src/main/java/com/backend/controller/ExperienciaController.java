@@ -4,8 +4,6 @@ package com.backend.controller;
 import com.backend.dto.ExperienciaDto;
 import com.backend.model.Experiencia;
 import com.backend.model.Persona;
-import com.backend.repository.ExperienciaRepository;
-import com.backend.service.ExperienciaService;
 import com.backend.service.IExperienciaService;
 import com.backend.service.IPersonaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +23,8 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/experiencia")
-@CrossOrigin(origins = "http://localhost:4200/")
+//@CrossOrigin(origins = "http://localhost:4200/")
+@CrossOrigin(origins = "https://port-front.firebaseapp.com/")
 public class ExperienciaController {
 
     @Autowired
