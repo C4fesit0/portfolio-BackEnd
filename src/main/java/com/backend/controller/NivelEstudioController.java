@@ -13,6 +13,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/nivelEstudio")
+//@CrossOrigin(origins = "http://localhost:4200/")
+@CrossOrigin(origins = "https://port-front.firebaseapp.com/")
 public class NivelEstudioController {
     
     @Autowired
