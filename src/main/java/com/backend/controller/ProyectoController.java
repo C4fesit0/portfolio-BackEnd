@@ -66,12 +66,14 @@ public class ProyectoController {
     }
 
     @PutMapping("/update/{id}")
-    public void actualizarProyecto(@PathVariable("id") Long id, @RequestBody ProyectoDto body){
+    public ResponseEntity<?> actualizarProyecto(@PathVariable("id") Long id, @RequestBody ProyectoDto body){
         System.out.println("ID: "+id+" NOMBRE: "+body.getNombre());
         if(id != null){
             Proyecto proyecto  = proyectoService.getProyecto(id);
             if(proyecto == null){
                 System.out.println("No existe el proyecto");
+                
+            return new ResponseEntity<String>("No existe el proyecto", HttpStatus.INTERNAL_SERVER_ERROR);
             }else {
                 proyecto.setDemo(body.getDemo());
                 proyecto.setDescripcion(body.getDescripcion());
@@ -86,9 +88,12 @@ public class ProyectoController {
                 tecnologias.addAll(list);
                 proyecto.setTecnologias(tecnologias);
                 proyectoService.updateProyecto(proyecto);
+                return new ResponseEntity<Proyecto>(proyecto, HttpStatus.OK);
+
             }
         }else {
             System.err.println("ID de proyecto NULL");
+            return new ResponseEntity<String>("ID-NULL", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
