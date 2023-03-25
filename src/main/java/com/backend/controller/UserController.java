@@ -9,7 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/usuario")//@CrossOrigin(origins = "http://localhost:4200/")
+@RequestMapping("/usuario")
+//@CrossOrigin(origins = "http://localhost:4200/")
 @CrossOrigin(origins = "https://port-front.firebaseapp.com/")
 public class UserController {
 

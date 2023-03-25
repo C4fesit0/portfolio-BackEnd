@@ -1,7 +1,6 @@
 package com.backend.model;
 
 import com.backend.dto.EducacionDto;
-import com.backend.dto.ExperienciaDto;
 import com.backend.util.date.Fecha;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -21,7 +20,7 @@ public class Educacion {
     private String titulo;
     private Date fecha_inicio;
     private Date fecha_final;
-    private boolean actualidad;
+    private Boolean actualidad;
     private String institucion;
     private String imagen;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -51,14 +50,15 @@ public class Educacion {
     public Educacion setEducacionInfo(EducacionDto data){
         this.titulo = data.getTitulo();
         this.institucion = data.getInstitucion();
-        Date fecha_inicio = Fecha.convertir(data.getFecha_inicio());
-        this.fecha_inicio = fecha_inicio;
-        this.actualidad = data.getActualidad();
-        if(this.actualidad){
-            this.fecha_final = null;
+       this.actualidad = data.getActualidad();
+        Date fechaInicio=  Fecha.convertir(data.getFecha_inicio());
+        this.fecha_inicio = fechaInicio;
+        if(!this.actualidad){
+            Date fechaFinal=  Fecha.convertir(data.getFecha_final());
+            this.fecha_final = fechaFinal;
         }else{
-            Date fecha_final = Fecha.convertir(data.getFecha_final());
-            this.fecha_final = fecha_final;
+            this.fecha_final = null;
+            this.actualidad=true;
         }
         this.imagen = data.getImagen();
         return this;

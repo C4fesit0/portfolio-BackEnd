@@ -25,6 +25,7 @@ import java.nio.file.Paths;
 import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
+import com.backend.util.date.Fecha;
 
 @RestController
 @RequestMapping("/educacion")
@@ -48,20 +49,27 @@ public class EducacionController {
     }
 
     @PostMapping("/crear")
-    public ResponseEntity<Educacion> crearEducacion(@RequestBody EducacionDto data){
-
+    public ResponseEntity<?> crearEducacion(@RequestBody EducacionDto data){
+         System.out.println("ENTROOO----");
         System.out.println(data.getActualidad());
+        System.out.println(data.getFecha_inicio());
         System.out.println(data.getFecha_final());
-
-        Long id_persona = data.getId_persona();
+        System.out.println(data.getTitulo());
+        
+       Long id_persona = data.getId_persona();
         Persona persona = personaService.getPersona(id_persona);
 
-        NivelEstudio nivelEstudio = nivelEstudioService.getNivelEstudio(data.getId_nivel_estudio());
+         NivelEstudio nivelEstudio = nivelEstudioService.getNivelEstudio(data.getId_nivel_estudio());
         
         Educacion educacion = new Educacion();
 
         educacion = educacion.setEducacionInfo(data);
-
+        System.out.println("Educacion----");
+        System.out.println(educacion.getActualidad());
+        System.out.println(educacion.getFecha_inicio());
+        System.out.println(educacion.getFecha_final());
+        System.out.println(educacion.getTitulo());
+        
         educacion.setNivel(nivelEstudio);
         educacion.setPersona(persona);
         educacionService.createEducacion(educacion);
@@ -79,22 +87,23 @@ public class EducacionController {
 
     @PutMapping("actualizar/{id}")
     public ResponseEntity<?> actualizarEducacion(@PathVariable("id")Long id,@RequestBody EducacionDto data){
-       /*try {*/
+       try {
            Educacion educacion = educacionService.getEducacion(id);
-
-           System.out.println(educacion.getInstitucion());
-           System.out.println(educacion.getFecha_inicio());
-           System.out.println(educacion.getFecha_final());
-
-           educacion = educacion.setEducacionInfo(data);
+           System.out.println("ACTUALIZANDO====");
+           System.out.println(data.getFecha_inicio());
+            System.out.println(data.getFecha_final());
+           System.out.println("ACTUALIZANDO====");
+         educacion.setEducacionInfo(data);
+            
+            System.out.println(educacion.getFecha_inicio());
            NivelEstudio nivelEstudio = nivelEstudioService.getNivelEstudio(data.getId_nivel_estudio());
            educacion.setNivel(nivelEstudio);
            educacionService.updateEducacion(educacion);
            return new ResponseEntity<>(educacion,HttpStatus.OK);
-       /*}catch (Exception e){
+       }catch (Exception e){
            System.err.println(e);
            return new ResponseEntity<>(e,HttpStatus.INTERNAL_SERVER_ERROR);
-       }*/
+       }
     }
 
 
