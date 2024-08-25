@@ -6,4 +6,3 @@ Para desarrollar esta api se utilizo
 -   Spring Boot
 -   MySQL
 
-Actualmente sigue en desarrollo. 
